@@ -3,6 +3,8 @@
 #include "Time.h"
 #include "Wire.h"
 #include "DS1307RTC.h"
+#include "OneWire.h"
+#include "DallasTemperature.h"
 #include "Arduino.h"
 
 #ifndef HEADER_CARDUINO
@@ -26,6 +28,7 @@
   #define PIN_DIST1_ECHO     9 // Echo pin for the distance sensor 1.
   #define PIN_DIST1_TRIG    10 // Trigger pin for the distance sensor 1.
 
+  // Custom LCD characters
   #define CHAR_BAR_0         1
   #define CHAR_BAR_50        2
   #define CHAR_BAR_100       3
@@ -35,11 +38,16 @@
   #define CHAR_LEISURE       7
   #define CHAR_STARTER       8
 
+  #define PIN_ONE_WIRE_BUS   7
+
 
   class Carduino {
     static LiquidCrystal LCD;
     static DHT TEMP;
     static tmElements_t TIME;
+    static OneWire ONEWIRE;
+    static DallasTemperature SENSORS;
+    static DeviceAddress PROBE01;
 
     public:
       void begin(void);
@@ -49,8 +57,10 @@
       void setupLCD(void);
       void setupDHT(void);
       void setupDist(void);
+      void setupSensors(void);
       void generateProgressBar(float, int);
-      float readTemp(void);
+      float readIntTemp(void);
+      float readExtTemp(void);
       float readLeisureVoltage(void);
       float readStarterVoltage(void);
       int readDist(void);

@@ -10,5 +10,5 @@ void setup() {
 
 void loop() {
   carduino.loop();
-  delay(500);
+  delay(1000);
 }

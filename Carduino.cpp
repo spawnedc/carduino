@@ -72,8 +72,10 @@ void Carduino::loop(void) {
   Carduino::LCD.print(vStarter, 2);
   Carduino::LCD.print("v");
 
-  Carduino::LCD.setCursor(10, 1);
-  Carduino::generateProgressBar(distPerc, LCD_COLUMNS/2);
+  if (dist != -1) {
+    Carduino::LCD.setCursor(10, 1);
+    Carduino::generateProgressBar(distPerc, LCD_COLUMNS/2);
+  }
 
   Carduino::LCD.setCursor(10, 2);
   Carduino::generateProgressBar(0.75, LCD_COLUMNS/2);

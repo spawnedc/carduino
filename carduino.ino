@@ -1,3 +1,5 @@
+#include <LiquidCrystal.h>
+
 #include <Carduino.h>
 
 Carduino carduino;

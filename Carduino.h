@@ -28,25 +28,15 @@
   #define PIN_DIST1_ECHO     9 // Echo pin for the distance sensor 1.
   #define PIN_DIST1_TRIG    10 // Trigger pin for the distance sensor 1.
 
-  // Custom LCD numbers
-  #define CHAR_NUM_BAR_1         1
-  #define CHAR_NUM_BAR_2         2
-  #define CHAR_NUM_BAR_3         3
-  #define CHAR_NUM_BAR_4         4
-  #define CHAR_NUM_BAR_5         5
-  #define CHAR_NUM_BAR_6         6
-  #define CHAR_NUM_BAR_7         7
-  #define CHAR_NUM_BAR_8         8
-  #define CHAR_NUM_BAR_9         9
   // Custom LCD characters
-  #define CHAR_BAR_0         10
-  #define CHAR_BAR_50        11
-  #define CHAR_BAR_100       12
-  #define CHAR_CELCIUS       13
-  #define CHAR_EMPTY         14
-  #define CHAR_FULL          15
-  #define CHAR_LEISURE       16
-  #define CHAR_STARTER       17
+  #define CHAR_BAR_0         1
+  #define CHAR_BAR_50        2
+  #define CHAR_BAR_100       3
+  #define CHAR_CELCIUS       4
+  #define CHAR_EMPTY         5
+  #define CHAR_FULL          6
+  #define CHAR_LEISURE       7
+  #define CHAR_STARTER       8
 
   #define PIN_ONE_WIRE_BUS   7
 

@@ -24,15 +24,6 @@ byte cEmpty[8]    = { 0b11111, 0b10001, 0b10111, 0b10011, 0b10111, 0b10001, 0b11
 byte cFull[8]     = { 0b11111, 0b10001, 0b10111, 0b10011, 0b10111, 0b10111, 0b11111, 0b00000 };
 byte cLeisure[8]  = { 0b11111, 0b10111, 0b10111, 0b10111, 0b10111, 0b10001, 0b11111, 0b00000 };
 byte cStarter[8]  = { 0b11111, 0b10001, 0b10111, 0b10001, 0b11101, 0b10001, 0b11111, 0b00000 };
-// the 8 arrays that form each segment of the custom numbers
-byte cNumBar1[8]      = { B11100, B11110, B11110, B11110, B11110, B11110, B11110, B11100 };
-byte cNumBar2[8]      = { B00111, B01111, B01111, B01111, B01111, B01111, B01111, B00111 };
-byte cNumBar3[8]      = { B11111, B11111, B00000, B00000, B00000, B00000, B11111, B11111 };
-byte cNumBar4[8]      = { B11110, B11100, B00000, B00000, B00000, B00000, B11000, B11100 };
-byte cNumBar5[8]      = { B01111, B00111, B00000, B00000, B00000, B00000, B00011, B00111 };
-byte cNumBar6[8]      = { B00000, B00000, B00000, B00000, B00000, B00000, B11111, B11111 };
-byte cNumBar7[8]      = { B00000, B00000, B00000, B00000, B00000, B00000, B00111, B01111 };
-byte cNumBar8[8]      = { B11111, B11111, B00000, B00000, B00000, B00000, B00000, B00000 };
 
 float intTemp;
 float extTemp;
@@ -53,17 +44,17 @@ void Carduino::begin(void) {
 
 void Carduino::loop(void) {
   intTemp = readIntTemp();
-  extTemp = readExtTemp();
-  dist = readDist();
+  // extTemp = readExtTemp();
+  // dist = readDist();
   tm = readTime();
   vStarter = readStarterVoltage();
   vLeisure = readLeisureVoltage();
 
-  distPerc = dist / 200.0;
 
   Carduino::LCD.clear();
+
   Carduino::LCD.setCursor(0, 0);
-  Carduino::LCD.print("Int ");
+  // Carduino::LCD.print("Int ");
   Carduino::LCD.print(intTemp, 1);
   Carduino::LCD.print((char)CHAR_CELCIUS);
 
@@ -76,22 +67,23 @@ void Carduino::loop(void) {
   Carduino::LCD.print(tm);
 
   Carduino::LCD.setCursor(0, 2);
-  Carduino::LCD.write(CHAR_STARTER);
+  Carduino::LCD.write((char)CHAR_STARTER);
   Carduino::LCD.print(vStarter, 2);
   Carduino::LCD.print("v");
 
-  if (dist != -1) {
-    Carduino::LCD.setCursor(10, 1);
-    Carduino::generateProgressBar(distPerc, LCD_COLUMNS/2);
-  }
+  Carduino::LCD.setCursor(0, 3);
+  Carduino::LCD.write((char)CHAR_LEISURE);
+  Carduino::LCD.print(vLeisure, 2);
+  Carduino::LCD.print("v");
+
+  // distPerc = dist / 200.0;
+  // if (dist != -1) {
+  //   Carduino::LCD.setCursor(10, 1);
+  //   Carduino::generateProgressBar(distPerc, LCD_COLUMNS/2);
+  // }
 
   Carduino::LCD.setCursor(10, 2);
   Carduino::generateProgressBar(0.75, LCD_COLUMNS/2);
-
-  Carduino::LCD.setCursor(0, 3);
-  Carduino::LCD.write(CHAR_LEISURE);
-  Carduino::LCD.print(vLeisure, 2);
-  Carduino::LCD.print("v");
 
   Carduino::LCD.setCursor(10, 3);
   Carduino::generateProgressBar(0.92, LCD_COLUMNS/2);
@@ -100,14 +92,6 @@ void Carduino::loop(void) {
 void Carduino::setupLCD() {
   Serial.println("Carduino::setupLCD");
   Carduino::LCD.begin(LCD_COLUMNS, LCD_ROWS);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_1, cNumBar1);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_2, cNumBar2);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_3, cNumBar3);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_4, cNumBar4);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_5, cNumBar5);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_6, cNumBar6);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_7, cNumBar7);
-  Carduino::LCD.createChar(CHAR_NUM_BAR_8, cNumBar8);
   Carduino::LCD.createChar(CHAR_BAR_0, cBar0);
   Carduino::LCD.createChar(CHAR_BAR_50, cBar50);
   Carduino::LCD.createChar(CHAR_BAR_100, cBar100);
@@ -225,148 +209,4 @@ String Carduino::print2digits(int number) {
     s = String(number);
   }
   return s;
-}
-
-void Carduino::custom0(int col)
-{ // uses segments to build the number 0
-  Carduino::LCD.setCursor(col, 0);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(8);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom1(int col)
-{
-  Carduino::LCD.setCursor(col,0);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col,1);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom2(int col)
-{
-  Carduino::LCD.setCursor(col,0);
-  Carduino::LCD.write(5);
-  Carduino::LCD.write(3);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(6);
-}
-
-void Carduino::custom3(int col)
-{
-  Carduino::LCD.setCursor(col,0);
-  Carduino::LCD.write(5);
-  Carduino::LCD.write(3);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(7);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom4(int col)
-{
-  Carduino::LCD.setCursor(col,0);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom5(int col)
-{
-  Carduino::LCD.setCursor(col,0);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(3);
-  Carduino::LCD.write(4);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(7);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom6(int col)
-{
-  Carduino::LCD.setCursor(col,0);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(3);
-  Carduino::LCD.write(4);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom7(int col)
-{
-  Carduino::LCD.setCursor(col,0);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(8);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(32);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom8(int col)
-{
-  Carduino::LCD.setCursor(col, 0);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(3);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::custom9(int col)
-{
-  Carduino::LCD.setCursor(col, 0);
-  Carduino::LCD.write(2);
-  Carduino::LCD.write(3);
-  Carduino::LCD.write(1);
-  Carduino::LCD.setCursor(col, 1);
-  Carduino::LCD.write(7);
-  Carduino::LCD.write(6);
-  Carduino::LCD.write(1);
-}
-
-void Carduino::printNumber(int value, int col) {
-  if (value == 0) {
-    custom0(col);
-  } if (value == 1) {
-    custom1(col);
-  } if (value == 2) {
-    custom2(col);
-  } if (value == 3) {
-    custom3(col);
-  } if (value == 4) {
-    custom4(col);
-  } if (value == 5) {
-    custom5(col);
-  } if (value == 6) {
-    custom6(col);
-  } if (value == 7) {
-    custom7(col);
-  } if (value == 8) {
-    custom8(col);
-  } if (value == 9) {
-    custom9(col);
-  }
 }

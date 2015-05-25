@@ -44,7 +44,7 @@
   class Carduino {
     static LiquidCrystal LCD;
     static DHT TEMP;
-    static tmElements_t TIME;
+    static tmElements_t TIME; // SDA: A4, SDL: A5
     static OneWire ONEWIRE;
     static DallasTemperature SENSORS;
     static DeviceAddress PROBE01;
@@ -66,8 +66,6 @@
       int readDist(void);
       String readTime(void);
       String print2digits(int);
-      void loadchars(void);
-      void printbigchar(byte, byte, byte, byte = 0);
   };
 
 #endif

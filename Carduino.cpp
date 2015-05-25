@@ -25,6 +25,30 @@ byte cFull[8]     = { 0b11111, 0b10001, 0b10111, 0b10011, 0b10111, 0b10111, 0b11
 byte cLeisure[8]  = { 0b11111, 0b10111, 0b10111, 0b10111, 0b10111, 0b10001, 0b11111, 0b00000 };
 byte cStarter[8]  = { 0b11111, 0b10001, 0b10111, 0b10001, 0b11101, 0b10001, 0b11111, 0b00000 };
 
+byte custchar[8][8] = {
+ { 0b11111, 0b11111, 0b11111, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000 },
+ { 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b11111, 0b11111, 0b11111 },
+ { 0b11111, 0b11111, 0b11111, 0b00000, 0b00000, 0b11111, 0b11111, 0b11111 },
+ { 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b01110, 0b01110, 0b01110 },
+ { 0b00000, 0b00000, 0b00000, 0b01110, 0b01110, 0b01110, 0b00000, 0b00000 },
+ { 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000 },
+ { 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000 },
+ { 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000 }
+};
+
+byte bignums[10][2][3] = {
+ { {255, 0, 255}, {255, 1, 255} },
+ { {0, 255, 254}, {1, 255, 1} },
+ { {2, 2, 255}, {255, 1, 1} },
+ { {0, 2, 255}, {1, 1, 255} },
+ { {255, 1, 255}, {254, 254, 255} },
+ { {255, 2, 2}, {1, 1, 255} },
+ { {255, 2, 2}, {255, 1, 255} },
+ { {0, 0, 255}, {254, 255, 254} },
+ { {255, 2, 255}, {255, 1, 255} },
+ { {255, 2, 255}, {254, 254, 255} }
+};
+
 float intTemp;
 float extTemp;
 int dist;
@@ -63,8 +87,10 @@ void Carduino::loop(void) {
   // Carduino::LCD.print(extTemp, 1);
   // Carduino::LCD.print((char)CHAR_CELCIUS);
 
-  Carduino::LCD.setCursor(15, 0);
-  Carduino::LCD.print(tm);
+  // Carduino::LCD.setCursor(15, 0);
+  // Carduino::LCD.print(tm);
+  printbigchar(1, 13, 0);
+  printbigchar(2, 17, 0);
 
   Carduino::LCD.setCursor(0, 2);
   Carduino::LCD.write((char)CHAR_STARTER);
@@ -103,6 +129,7 @@ void Carduino::setupLCD() {
   Carduino::LCD.clear();
   Carduino::LCD.setCursor(6, 1);
   Carduino::LCD.print("CARDUINO");
+  Carduino::loadchars();
 }
 
 void Carduino::setupDHT() {
@@ -209,4 +236,37 @@ String Carduino::print2digits(int number) {
     s = String(number);
   }
   return s;
+}
+
+void Carduino::loadchars() {
+  Carduino::LCD.command(64);
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      Carduino::LCD.write(custchar[i][j]);
+    }
+  }
+  Carduino::LCD.home();
+}
+
+void Carduino::printbigchar(byte digit, byte col, byte row, byte symbol) {
+  if (digit > 9) {
+    return;
+  }
+
+  for (int i = 0; i < 2; i++) {
+    Carduino::LCD.setCursor(col, row + i);
+    for (int j = 0; j < 3; j++) {
+      Carduino::LCD.write(bignums[digit][i][j]);
+    }
+    Carduino::LCD.write(254);
+  }
+  if (symbol) {
+    Carduino::LCD.setCursor(col + 3, row + 1);
+    Carduino::LCD.write(3);
+  } else if (symbol) {
+    Carduino::LCD.setCursor(col + 3, row);
+    Carduino::LCD.write(4);
+    Carduino::LCD.setCursor(col + 3, row + 1);
+    Carduino::LCD.write(4);
+  }
 }

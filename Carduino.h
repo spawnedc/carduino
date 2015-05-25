@@ -66,17 +66,8 @@
       int readDist(void);
       String readTime(void);
       String print2digits(int);
-      void custom0(int);
-      void custom1(int);
-      void custom2(int);
-      void custom3(int);
-      void custom4(int);
-      void custom5(int);
-      void custom6(int);
-      void custom7(int);
-      void custom8(int);
-      void custom9(int);
-      void printNumber(int, int);
+      void loadchars(void);
+      void printbigchar(byte, byte, byte, byte = 0);
   };
 
 #endif

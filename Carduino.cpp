@@ -34,7 +34,7 @@ float vLeisure;
 float R1 = 30000.0;
 float R2 = 7500.0;
 float RFactor = R2 / (R1 + R2);
-float AFactor = 0.004882812;
+float AFactor = 4.7010 / 1024; //4.7547
 float voltageFactor = AFactor / RFactor;
 
 String tm;
@@ -164,6 +164,7 @@ float Carduino::readLeisureVoltage() {
 
 float Carduino::readStarterVoltage() {
   int value = analogRead(PIN_BATTERY_S);
+  Serial.println(value);
   return value * voltageFactor;
 }
 

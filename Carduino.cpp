@@ -31,6 +31,12 @@ int dist;
 float distPerc;
 float vStarter;
 float vLeisure;
+float R1 = 30000.0;
+float R2 = 7500.0;
+float RFactor = R2 / (R1 + R2);
+float AFactor = 0.004882812;
+float voltageFactor = AFactor / RFactor;
+
 String tm;
 
 void Carduino::begin(void) {
@@ -125,8 +131,8 @@ void Carduino::setupSensors() {
 
 void Carduino::setupVoltageReaders() {
   Serial.println("Carduino::setupVoltageReaders");
-  pinMode(PIN_BATTERY_S, OUTPUT);
-  pinMode(PIN_BATTERY_L, OUTPUT);
+  pinMode(PIN_BATTERY_S, INPUT);
+  pinMode(PIN_BATTERY_L, INPUT);
 }
 
 void Carduino::generateProgressBar(float perc, int cols) {
@@ -152,30 +158,13 @@ void Carduino::generateProgressBar(float perc, int cols) {
 }
 
 float Carduino::readLeisureVoltage() {
-  return 12.63;
+  int value = analogRead(PIN_BATTERY_L);
+  return value * voltageFactor;
 }
 
 float Carduino::readStarterVoltage() {
-  int value;
-  int val2;
-  float temp;
-  float vout;
-  float vin;
-  vout = analogRead(1);
-  temp = vout/4.092;
-  value = (int)temp;
-  val2 = ((value % 100) / 10);
-  vin = vout * 0.0244;
-  Serial.print(vout);
-  Serial.print(" || ");
-  Serial.print(temp);
-  Serial.print(" || ");
-  Serial.print(value);
-  Serial.print(" || ");
-  Serial.print(vin);
-  Serial.print(" || ");
-  Serial.println(val2);
-  return vin;
+  int value = analogRead(PIN_BATTERY_S);
+  return value * voltageFactor;
 }
 
 float Carduino::readIntTemp() {

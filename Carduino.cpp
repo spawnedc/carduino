@@ -30,12 +30,17 @@ float extTemp;
 int dist;
 float distPerc;
 float vStarter;
+float vStarterPerc;
 float vLeisure;
+float vLeisurePerc;
 float R1 = 30000.0;
 float R2 = 7500.0;
 float RFactor = R2 / (R1 + R2);
 float AFactor = 4.7010 / 1024; //4.7547
 float voltageFactor = AFactor / RFactor;
+float battMin = 11.89;
+float battMax = 12.66;
+float battRange = battMax - battMin;
 
 String tm;
 
@@ -56,6 +61,18 @@ void Carduino::loop(void) {
   tm = readTime();
   vStarter = readStarterVoltage();
   vLeisure = readLeisureVoltage();
+
+  if (vStarter > battMin) {
+    vStarterPerc = (vStarter - battMin) / battRange;
+  } else {
+    vStarterPerc = 0.0;
+  }
+
+  if (vLeisure > battMin) {
+    vLeisurePerc = (vLeisure - battMin) / battRange;
+  } else {
+    vLeisurePerc = 0.0;
+  }
 
 
   Carduino::LCD.clear();
@@ -90,10 +107,10 @@ void Carduino::loop(void) {
   // }
 
   Carduino::LCD.setCursor(8, 2);
-  Carduino::generateProgressBar(0.75, 12);
+  Carduino::generateProgressBar(vStarterPerc, 12);
 
   Carduino::LCD.setCursor(8, 3);
-  Carduino::generateProgressBar(0.92, 12);
+  Carduino::generateProgressBar(vLeisurePerc, 12);
 }
 
 void Carduino::setupLCD() {

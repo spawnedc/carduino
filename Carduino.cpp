@@ -40,6 +40,7 @@ void Carduino::begin(void) {
   setupDHT();
   setupDist();
   setupSensors();
+  setupVoltageReaders();
 }
 
 void Carduino::loop(void) {
@@ -122,6 +123,12 @@ void Carduino::setupSensors() {
   Carduino::SENSORS.setResolution(Carduino::PROBE01, 10);
 }
 
+void Carduino::setupVoltageReaders() {
+  Serial.println("Carduino::setupVoltageReaders");
+  pinMode(PIN_BATTERY_S, OUTPUT);
+  pinMode(PIN_BATTERY_L, OUTPUT);
+}
+
 void Carduino::generateProgressBar(float perc, int cols) {
   cols -= 2;
   float value = cols * perc;
@@ -149,7 +156,26 @@ float Carduino::readLeisureVoltage() {
 }
 
 float Carduino::readStarterVoltage() {
-  return 12.33;
+  int value;
+  int val2;
+  float temp;
+  float vout;
+  float vin;
+  vout = analogRead(1);
+  temp = vout/4.092;
+  value = (int)temp;
+  val2 = ((value % 100) / 10);
+  vin = vout * 0.0244;
+  Serial.print(vout);
+  Serial.print(" || ");
+  Serial.print(temp);
+  Serial.print(" || ");
+  Serial.print(value);
+  Serial.print(" || ");
+  Serial.print(vin);
+  Serial.print(" || ");
+  Serial.println(val2);
+  return vin;
 }
 
 float Carduino::readIntTemp() {

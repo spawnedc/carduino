@@ -39,6 +39,8 @@
   #define CHAR_STARTER       8
 
   #define PIN_ONE_WIRE_BUS   7
+  #define PIN_BATTERY_S      1 // Analog
+  #define PIN_BATTERY_L      2 // Analog
 
 
   class Carduino {
@@ -58,6 +60,7 @@
       void setupDHT(void);
       void setupDist(void);
       void setupSensors(void);
+      void setupVoltageReaders(void);
       void generateProgressBar(float, int);
       float readIntTemp(void);
       float readExtTemp(void);

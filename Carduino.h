@@ -1,4 +1,4 @@
-#include "LiquidCrystal.h"
+// #include "LiquidCrystal.h"
 #include "DHT.h"
 #include "Time.h"
 #include "Wire.h"
@@ -6,19 +6,26 @@
 #include "OneWire.h"
 #include "DallasTemperature.h"
 #include "Arduino.h"
+#include "Adafruit_GFX.h" // Core graphics library
+#include "Adafruit_ST7735.h" // Hardware-specific library
+#include "SPI.h"
 
 #ifndef HEADER_CARDUINO
   #define HEADER_CARDUINO
 
   // LCD definitions
-  #define PIN_LCD_D7         2
-  #define PIN_LCD_D6         3
-  #define PIN_LCD_D5         4
-  #define PIN_LCD_D4         5
-  #define PIN_LCD_ENABLE    11
-  #define PIN_LCD_RS        12
-  #define LCD_COLUMNS       20
-  #define LCD_ROWS           4
+  // #define PIN_LCD_D7         2
+  // #define PIN_LCD_D6         3
+  // #define PIN_LCD_D5         4
+  // #define PIN_LCD_D4         5
+  // #define PIN_LCD_ENABLE    11
+  // #define PIN_LCD_RS        12
+  // #define LCD_COLUMNS       20
+  // #define LCD_ROWS           4
+
+  #define TFT_CS     10
+  #define TFT_RST    9
+  #define TFT_DC     8
 
   // DHT definitions
   #define PIN_DHT            6 // Temperature and humidity pin
@@ -44,7 +51,8 @@
 
 
   class Carduino {
-    static LiquidCrystal LCD;
+    // static LiquidCrystal LCD;
+    static Adafruit_ST7735 TFT;
     static DHT TEMP;
     static tmElements_t TIME; // SDA: A4, SDL: A5
     static OneWire ONEWIRE;
@@ -56,7 +64,8 @@
       void loop(void);
 
     private:
-      void setupLCD(void);
+      // void setupLCD(void);
+      void setupTFT(void);
       void setupDHT(void);
       void setupDist(void);
       void setupSensors(void);
@@ -69,6 +78,7 @@
       int readDist(void);
       String readTime(void);
       String print2digits(int);
+      time_t processSyncMessage();
   };
 
 #endif

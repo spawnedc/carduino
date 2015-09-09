@@ -1,5 +1,3 @@
-#include <LiquidCrystal.h>
-
 #include <Carduino.h>
 
 Carduino carduino;
@@ -12,5 +10,5 @@ void setup() {
 
 void loop() {
   carduino.loop();
-  delay(30000);
+  delay(1000);
 }

@@ -3,8 +3,6 @@
 #include "Time.h"
 #include "Wire.h"
 #include "DS1307RTC.h"
-#include "OneWire.h"
-#include "DallasTemperature.h"
 #include "Arduino.h"
 
 #ifndef HEADER_CARDUINO
@@ -40,7 +38,6 @@
   #define CHAR_LEISURE       7
   #define CHAR_STARTER       8
 
-  #define PIN_ONE_WIRE_BUS   7
   #define PIN_BATTERY_S      1 // Analog
   #define PIN_BATTERY_L      2 // Analog
 
@@ -49,9 +46,6 @@
     static LiquidCrystal_I2C LCD;
     static DHT TEMP;
     static tmElements_t TIME; // SDA: A4, SDL: A5
-    static OneWire ONEWIRE;
-    static DallasTemperature SENSORS;
-    static DeviceAddress PROBE01;
 
     public:
       void begin(void);
@@ -61,11 +55,9 @@
       void setupLCD(void);
       void setupDHT(void);
       void setupDist(void);
-      void setupSensors(void);
       void setupVoltageReaders(void);
       void generateProgressBar(float, int);
       float readIntTemp(void);
-      float readExtTemp(void);
       float readLeisureVoltage(void);
       float readStarterVoltage(void);
       int readDist(void);

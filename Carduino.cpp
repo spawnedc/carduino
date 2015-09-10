@@ -4,16 +4,11 @@
 #include "Time.h"
 #include "Wire.h"
 #include "DS1307RTC.h"
-#include "OneWire.h"
-#include "DallasTemperature.h"
 #include "Arduino.h"
 
 LiquidCrystal_I2C Carduino::LCD = LiquidCrystal_I2C(LCD_ADDR, PIN_LCD_ENABLE, PIN_LCD_RW, PIN_LCD_RS, PIN_LCD_D4, PIN_LCD_D5, PIN_LCD_D6, PIN_LCD_D7, PIN_LCD_D3, POSITIVE);
 DHT Carduino::TEMP = DHT(PIN_DHT, DHTTYPE);
 tmElements_t Carduino::TIME;
-OneWire Carduino::ONEWIRE(PIN_ONE_WIRE_BUS);
-DallasTemperature Carduino::SENSORS(&Carduino::ONEWIRE);
-DeviceAddress Carduino::PROBE01 = { 0x28, 0xFF, 0x8F, 0x34, 0x63, 0x14, 0x02, 0x80 };
 
 byte cBar0[8]     = { 0b11011, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b11011, 0b00000 };
 byte cBar50[8]    = { 0b11011, 0b11000, 0b11000, 0b11000, 0b11000, 0b11000, 0b11011, 0b00000 };
@@ -25,7 +20,6 @@ byte cLeisure[8]  = { 0b11111, 0b10111, 0b10111, 0b10111, 0b10111, 0b10001, 0b11
 byte cStarter[8]  = { 0b11111, 0b10001, 0b10111, 0b10001, 0b11101, 0b10001, 0b11111, 0b00000 };
 
 float intTemp;
-float extTemp;
 int dist;
 float distPerc;
 float vStarter;
@@ -37,7 +31,7 @@ float R2 = 7500.0;
 float RFactor = R2 / (R1 + R2);
 float AFactor = 4.7010 / 1024; //4.7547
 float voltageFactor = AFactor / RFactor;
-float battMin = 11.89;
+float battMin = 10.20;
 float battMax = 12.66;
 float battRange = battMax - battMin;
 
@@ -49,7 +43,6 @@ void Carduino::begin(void) {
   setupLCD();
   setupDHT();
   setupDist();
-  setupSensors();
   setupVoltageReaders();
 }
 
@@ -65,19 +58,22 @@ void Carduino::loop(void) {
   }
 
   intTemp = readIntTemp();
-  extTemp = readExtTemp();
   // dist = readDist();
   tm = readTime();
   vStarter = readStarterVoltage();
   vLeisure = readLeisureVoltage();
 
-  if (vStarter > battMin) {
+  if (vStarter >= battMax) {
+    vStarterPerc = 100.0;
+  } else if (vStarter > battMin) {
     vStarterPerc = (vStarter - battMin) / battRange;
   } else {
     vStarterPerc = 0.0;
   }
 
-  if (vLeisure > battMin) {
+  if (vLeisure >= battMax) {
+    vLeisurePerc = 100.0;
+  } else if (vLeisure > battMin) {
     vLeisurePerc = (vLeisure - battMin) / battRange;
   } else {
     vLeisurePerc = 0.0;
@@ -92,12 +88,6 @@ void Carduino::loop(void) {
   Carduino::LCD.print("Int ");
   Carduino::LCD.print(intTemp, 0);
   Carduino::LCD.write(char(CHAR_CELCIUS));
-
-  Carduino::LCD.setCursor(0, 1);
-  Carduino::LCD.print("Ext ");
-  Carduino::LCD.print(extTemp, 0);
-  Carduino::LCD.write(char(CHAR_CELCIUS));
-
 
   Carduino::LCD.setCursor(0, 2);
   Carduino::LCD.write(char(CHAR_STARTER));
@@ -149,12 +139,6 @@ void Carduino::setupDist() {
   pinMode(PIN_DIST1_ECHO, INPUT);
 }
 
-void Carduino::setupSensors() {
-  Serial.println("Carduino::setupSensors");
-  Carduino::SENSORS.begin();
-  Carduino::SENSORS.setResolution(Carduino::PROBE01, 10);
-}
-
 void Carduino::setupVoltageReaders() {
   Serial.println("Carduino::setupVoltageReaders");
   pinMode(PIN_BATTERY_S, INPUT);
@@ -163,6 +147,11 @@ void Carduino::setupVoltageReaders() {
 
 void Carduino::generateProgressBar(float perc, int cols) {
   cols -= 2;
+  if (perc > 100.0) {
+    perc = 100.0;
+  } else if (perc < 0.0) {
+    perc = 0.0;
+  }
   float value = cols * perc;
   int numSolids = cols * perc;
   int numPartials = (value - numSolids) * 10;
@@ -199,11 +188,6 @@ float Carduino::readIntTemp() {
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   // Read temperature as Celsius
   return Carduino::TEMP.readTemperature();
-}
-
-float Carduino::readExtTemp() {
-  Carduino::SENSORS.requestTemperatures();
-  return Carduino::SENSORS.getTempC(Carduino::PROBE01);
 }
 
 int Carduino::readDist() {

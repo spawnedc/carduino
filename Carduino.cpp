@@ -64,7 +64,7 @@ void Carduino::loop(void) {
   vLeisure = readLeisureVoltage();
 
   if (vStarter >= battMax) {
-    vStarterPerc = 100.0;
+    vStarterPerc = 1.0;
   } else if (vStarter > battMin) {
     vStarterPerc = (vStarter - battMin) / battRange;
   } else {
@@ -72,7 +72,7 @@ void Carduino::loop(void) {
   }
 
   if (vLeisure >= battMax) {
-    vLeisurePerc = 100.0;
+    vLeisurePerc = 1.0;
   } else if (vLeisure > battMin) {
     vLeisurePerc = (vLeisure - battMin) / battRange;
   } else {
@@ -147,8 +147,8 @@ void Carduino::setupVoltageReaders() {
 
 void Carduino::generateProgressBar(float perc, int cols) {
   cols -= 2;
-  if (perc > 100.0) {
-    perc = 100.0;
+  if (perc > 1.0) {
+    perc = 1.0;
   } else if (perc < 0.0) {
     perc = 0.0;
   }
